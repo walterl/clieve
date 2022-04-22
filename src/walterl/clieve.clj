@@ -41,15 +41,25 @@
   [[_ & forms]]
   (str/join \newline (map node->str forms)))
 
-(defn block
+(defn- block
   [body]
   (format "{\n%s\n}\n" (node->str body)))
 
+(defn- add-cond-body-pair
+  [s [cond_ body]]
+  (if (some? body)
+    (format "%s%s %s %s"
+            (str/trim-newline s)
+            (if (str/blank? s) "if" " elsif")
+            (node->str cond_)
+            (block body))
+    (format "%s else %s"
+            (str/trim-newline s)
+            (block cond_))))
+
 (defmethod node->str 'if
-  [[_ cnd then else]]
-  (cond-> (format "if %s %s" (node->str cnd) (block then))
-    (some? else) (-> (str/trim-newline)
-                     (str " else " (block else)))))
+  [[_ & parts]]
+  (reduce add-cond-body-pair "" (partition-all 2 parts)))
 
 (defmethod node->str 'require
   [[_ & exts]]

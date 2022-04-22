@@ -80,4 +80,18 @@
            (clieve/transpile
              '(if (raw true)
                 (discard)
+                (stop))))))
+  (testing "if-elsif"
+    (is (= "if true {\ndiscard;\n} elsif false {\nstop;\n}\n"
+           (clieve/transpile
+             '(if
+                (raw true) (discard)
+                (raw false) (stop))))))
+  (testing "if-elsif-elsif-else"
+    (is (= "if 1 {\nkeep;\n} elsif 2 {\ndiscard;\n} elsif 3 {\nkeep;\n} else {\nstop;\n}\n"
+           (clieve/transpile
+             '(if
+                (raw 1) (keep)
+                (raw 2) (discard)
+                (raw 3) (keep)
                 (stop)))))))
