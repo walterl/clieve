@@ -15,7 +15,7 @@
        (map quoted-str)
        (str/join ", ")))
 
-(defn quoted
+(defn string-list
   "Returns a list of quoted string if `s` is a sequence, otherwise a quoted string of `s`."
   [s]
   (if (sequential? s)
@@ -56,8 +56,10 @@
        (map #(str *indent* %))
        (str/join \newline)))
 
-(defn comparitor
-  "Formats `x` as a comparitor: `:is` becomes \":is\"."
+(defn tagged-arg
+  "Formats `x` as a tagged argument: `:is` becomes \":is\".
+
+  See RFC5228, section 2.6.2 for more details."
   [kw]
   ;; Avoid keyword namespaces; don't do (str kw)
   (str ":" (name kw)))

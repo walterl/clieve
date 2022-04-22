@@ -53,7 +53,7 @@
 
 (defmethod node->str 'require
   [[_ & [exts]]]
-  (format "require %s;\n" (u/quoted exts)))
+  (format "require %s;\n" (u/string-list exts)))
 
 (defmethod node->str 'stop
   [[a]]
@@ -97,7 +97,7 @@
 
 (defmethod node->str 'header
   [[_ comparitor headers keys_]]
-  (format "header %s %s %s" (u/comparitor (name comparitor)) (u/quoted headers) (u/quoted keys_)))
+  (format "header %s %s %s" (u/tagged-arg (name comparitor)) (u/string-list headers) (u/string-list keys_)))
 
 ;;; Public API
 
