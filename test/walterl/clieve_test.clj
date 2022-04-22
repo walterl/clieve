@@ -2,7 +2,18 @@
   (:require [clojure.test :refer [deftest is testing]]
             [walterl.clieve :as clieve]))
 
-(deftest a-test
+(deftest transpile-test
+  (testing "simple terminal actions"
+    (testing "discard"
+      (is (= "discard;"
+             (clieve/transpile '(discard)))))
+    (testing "keep"
+      (is (= "keep;"
+             (clieve/transpile '(keep)))))
+    (testing "stop"
+      (is (= "stop;"
+             (clieve/transpile '(stop))))))
+
   (testing "single require action"
     (testing "with single extension"
       (is (= "require \"fileinto\";\n"
@@ -10,6 +21,7 @@
     (testing "with multiple extensions"
       (is (= "require [\"a\", \"b\"];\n"
              (clieve/transpile '(require "a" "b"))))))
+
   (testing "multiple require actions"
     (testing "with single extension each"
       (is (= "require \"a\";\n\nrequire \"b\";\n"

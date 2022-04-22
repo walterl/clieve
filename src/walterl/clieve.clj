@@ -2,9 +2,25 @@
   (:require [clojure.string :as str]
             [walterl.clieve.util :as u]))
 
+(defn simple-action
+  [x]
+  (str x ";"))
+
 (defmulti node->str
   "Coverts a Clieve node into a Sieve string."
   (fn [node] (first node)))
+
+(defmethod node->str 'discard
+  [[a]]
+  (simple-action a))
+
+(defmethod node->str 'keep
+  [[a]]
+  (simple-action a))
+
+(defmethod node->str 'stop
+  [[a]]
+  (simple-action a))
 
 (defmethod node->str 'do
   [[_ & forms]]
@@ -20,9 +36,3 @@
   "Transpiles Clieve source form to Sieve source."
   [src]
   (node->str src))
-
-(comment
-  (def src '(require "fileinto"))
-  (type (first src))
-  (transpile '(require "fileinto"))
-  ,)
