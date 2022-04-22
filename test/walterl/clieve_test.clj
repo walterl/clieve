@@ -31,4 +31,8 @@
              (clieve/transpile '(do (require "a" "aa") (require "b" "bb" "bbb"))))))
     (testing "one with a single extension, another with multiple"
       (is (= "require \"a\";\n\nrequire [\"b\", \"bb\"];\n"
-             (clieve/transpile '(do (require "a") (require "b" "bb"))))))))
+             (clieve/transpile '(do (require "a") (require "b" "bb")))))))
+
+  (testing "fileinto"
+    (is (= "fileinto \"Junk\";"
+           (clieve/transpile '(fileinto "Junk"))))))

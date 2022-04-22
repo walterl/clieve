@@ -32,6 +32,10 @@
     (format "require %s;\n" (u/quoted-str (first exts)))
     (format "require [%s];\n" (u/quoted-strs exts))))
 
+(defmethod node->str 'fileinto
+  [[_ & [dest]]]
+  (format "fileinto %s;" (u/quoted-str dest)))
+
 (defn transpile
   "Transpiles Clieve source form to Sieve source."
   [src]
