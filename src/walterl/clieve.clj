@@ -1,12 +1,20 @@
-(ns walterl.clieve)
+(ns walterl.clieve
+  (:require [clojure.string :as str]
+            [walterl.clieve.util :as u]))
 
 (defmulti node->str
   "Coverts a Clieve node into a Sieve string."
   (fn [node] (first node)))
 
+(defmethod node->str 'do
+  [[_ & forms]]
+  (str/join \newline (map node->str forms)))
+
 (defmethod node->str 'require
-  [[_ ext]]
-  (format "require [\"%s\"];\n" ext))
+  [[_ & exts]]
+  (if (= 1 (count exts))
+    (format "require %s;\n" (u/quoted-str (first exts)))
+    (format "require [%s];\n" (u/quoted-strs exts))))
 
 (defn transpile
   "Transpiles Clieve source form to Sieve source."
