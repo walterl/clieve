@@ -14,3 +14,12 @@
   (->> ss
        (map quoted-str)
        (str/join ", ")))
+
+(defn flag-kw->str
+  "Converts :seen to \"\\\\Seen\"."
+  [flag]
+  (-> flag
+      (name)
+      (str/capitalize)
+      (->> (str "\\\\"))
+      quoted-str))

@@ -36,6 +36,10 @@
   [[_ & [dest]]]
   (format "fileinto %s;" (u/quoted-str dest)))
 
+(defmethod node->str 'addflag
+  [[_ & [flag]]]
+  (format "addflag %s;" (u/flag-kw->str flag)))
+
 (defn transpile
   "Transpiles Clieve source form to Sieve source."
   [src]

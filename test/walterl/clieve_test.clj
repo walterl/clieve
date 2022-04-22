@@ -38,3 +38,8 @@
   (testing "fileinto"
     (is (= "fileinto \"Junk\";"
            (clieve/transpile '(fileinto "Junk"))))))
+
+(deftest transpile-addflag-actions
+  (testing "addflag"
+    (is (= "addflag \"\\\\Seen\";"
+           (clieve/transpile '(addflag :seen))))))
