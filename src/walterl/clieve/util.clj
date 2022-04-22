@@ -15,6 +15,13 @@
        (map quoted-str)
        (str/join ", ")))
 
+(defn quoted
+  "Returns a list of quoted string if `s` is a sequence, otherwise a quoted string of `s`."
+  [s]
+  (if (sequential? s)
+    (format "[%s]" (quoted-strs s))
+    (quoted-str s)))
+
 (defn flag-kw->str
   "Converts :seen to \"\\\\Seen\"."
   [flag]

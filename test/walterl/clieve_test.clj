@@ -40,7 +40,7 @@
              (clieve/transpile '(require "fileinto")))))
     (testing "with multiple extensions"
       (is (= "require [\"a\", \"b\"];\n"
-             (clieve/transpile '(require "a" "b"))))))
+             (clieve/transpile '(require ["a" "b"]))))))
 
   (testing "multiple require commands"
     (testing "with single extension each"
@@ -48,10 +48,10 @@
              (clieve/transpile '(do (require "a") (require "b"))))))
     (testing "with multiple extensions each"
       (is (= "require [\"a\", \"aa\"];\n\nrequire [\"b\", \"bb\", \"bbb\"];\n"
-             (clieve/transpile '(do (require "a" "aa") (require "b" "bb" "bbb"))))))
+             (clieve/transpile '(do (require ["a" "aa"]) (require ["b" "bb" "bbb"]))))))
     (testing "one with a single extension, another with multiple"
       (is (= "require \"a\";\n\nrequire [\"b\", \"bb\"];\n"
-             (clieve/transpile '(do (require "a") (require "b" "bb"))))))))
+             (clieve/transpile '(do (require "a") (require ["b" "bb"]))))))))
 
 (deftest transpile-fileinto-command-test
   (testing "fileinto"

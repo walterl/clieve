@@ -52,10 +52,8 @@
   (reduce add-cond-body-pair "" (partition-all 2 parts)))
 
 (defmethod node->str 'require
-  [[_ & exts]]
-  (if (= 1 (count exts))
-    (format "require %s;\n" (u/quoted-str (first exts)))
-    (format "require [%s];\n" (u/quoted-strs exts))))
+  [[_ & [exts]]]
+  (format "require %s;\n" (u/quoted exts)))
 
 (defmethod node->str 'stop
   [[a]]
