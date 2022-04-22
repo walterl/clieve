@@ -79,6 +79,14 @@
 
 ;;; Test commands
 
+(defmethod node->str 'address
+  [[_ comparitor address-part headers keys_]]
+  (format "address %s %s %s %s"
+          (u/tagged-arg comparitor)
+          (u/tagged-arg address-part)
+          (u/string-list headers)
+          (u/string-list keys_)))
+
 (defn- test-list
   [tests]
   (format "(\n%s\n)\n"

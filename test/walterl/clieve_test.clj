@@ -128,6 +128,13 @@
                   (raw 22) (keep))
                 (discard)))))))
 
+(deftest transpile-address-command-test
+  (testing "address"
+    (is (= "address :is :localpart \"to\" \"me\""
+           (clieve/transpile '(address :is :localpart "to" "me"))))
+    (is (= "address :matches :all \"from\" \"advertise*@gmail.com\""
+           (clieve/transpile '(address :matches :all "from" "advertise*@gmail.com"))))))
+
 (deftest transpile-allof-command-test
   (testing "allof"
     (is (= "allof (\n    true\n)\n"

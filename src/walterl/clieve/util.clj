@@ -16,7 +16,9 @@
        (str/join ", ")))
 
 (defn string-list
-  "Returns a list of quoted string if `s` is a sequence, otherwise a quoted string of `s`."
+  "Returns a list of quoted string if `s` is a sequence, otherwise a quoted string of `s`.
+
+  See RFC5228, section 2.4.2.1 \"String Lists\" for more information."
   [s]
   (if (sequential? s)
     (format "[%s]" (quoted-strs s))
@@ -59,7 +61,7 @@
 (defn tagged-arg
   "Formats `x` as a tagged argument: `:is` becomes \":is\".
 
-  See RFC5228, section 2.6.2 for more details."
+  See RFC5228, section 2.6.2 \"Tagged Arguments\" for more details."
   [kw]
   ;; Avoid keyword namespaces; don't do (str kw)
   (str ":" (name kw)))
