@@ -23,3 +23,18 @@
       (str/capitalize)
       (->> (str "\\\\"))
       quoted-str))
+
+(defn lines
+  "Turns sequence of \n-separated strings into a single sequence of strings."
+  [lines]
+  (-> lines
+      (->> (str/join "\n"))
+      (str/split #"\n")))
+
+(defn comment-line
+  "Formats s as a comment line: prefixed with #, ending in a newline."
+  [s]
+  (str "#"
+       (when (not-empty s) (str " "))
+       s
+       "\n"))

@@ -10,6 +10,13 @@
   "Coverts a Clieve node into a Sieve string."
   (fn [node] (first node)))
 
+(defmethod node->str 'comment_
+  [[_ & comments]]
+  (->> comments
+       (u/lines)
+       (map u/comment-line)
+       (str/join)))
+
 (defmethod node->str 'discard
   [[a]]
   (simple-action a))

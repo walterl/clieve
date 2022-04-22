@@ -2,6 +2,24 @@
   (:require [clojure.test :refer [deftest is testing]]
             [walterl.clieve :as clieve]))
 
+(deftest transpile-comment-test
+  (testing "transpiling comments"
+    (testing "single line"
+      (is (= "# This is a comment\n"
+             (clieve/transpile '(comment_ "This is a comment")))))
+    (testing "multiple lines in a single arg"
+      (is (= "# Line 1\n# Line 2\n"
+             (clieve/transpile '(comment_ "Line 1\nLine 2")))))
+    (testing "multiple lines in separate args"
+      (is (= "# Line 1\n# Line 2\n"
+             (clieve/transpile '(comment_ "Line 1" "Line 2")))))
+    (testing "multiple args with multiple lines each"
+      (is (= "# 1a\n# 1b\n# 2a\n# 2b\n# 3\n"
+             (clieve/transpile '(comment_ "1a\n1b" "2a\n2b" "3")))))
+    (testing "with blank lines"
+      (is (= "# Line 1\n#\n# Line 2\n"
+             (clieve/transpile '(comment_ "Line 1\n\nLine 2")))))))
+
 (deftest transpile-simple-actions-test
   (testing "simple terminal actions"
     (testing "discard"
@@ -14,7 +32,7 @@
       (is (= "stop;"
              (clieve/transpile '(stop)))))))
 
-(deftest transpile-require-actions
+(deftest transpile-require-actions-test
   (testing "single require action"
     (testing "with single extension"
       (is (= "require \"fileinto\";\n"
@@ -34,12 +52,12 @@
       (is (= "require \"a\";\n\nrequire [\"b\", \"bb\"];\n"
              (clieve/transpile '(do (require "a") (require "b" "bb"))))))))
 
-(deftest transpile-fileinto-actions
+(deftest transpile-fileinto-actions-test
   (testing "fileinto"
     (is (= "fileinto \"Junk\";"
            (clieve/transpile '(fileinto "Junk"))))))
 
-(deftest transpile-addflag-actions
+(deftest transpile-addflag-actions-test
   (testing "addflag"
     (is (= "addflag \"\\\\Seen\";"
            (clieve/transpile '(addflag :seen))))))
