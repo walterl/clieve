@@ -38,3 +38,13 @@
        (when (not-empty s) (str " "))
        s
        "\n"))
+
+(def ^:dynamic *indent* "    ")
+
+(defn indent
+  "Indents all lines in `s` one level (`*indent*`)."
+  [s]
+  (->> s
+       (str/split-lines)
+       (map #(str *indent* %))
+       (str/join \newline)))

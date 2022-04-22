@@ -25,35 +25,15 @@
   [[_ & [x]]]
   (str x))
 
-(defmethod node->str 'discard
-  [[a]]
-  (simple-action a))
-
-(defmethod node->str 'keep
-  [[a]]
-  (simple-action a))
-
-(defmethod node->str 'stop
-  [[a]]
-  (simple-action a))
-
 (defmethod node->str 'do
   [[_ & forms]]
   (str/join \newline (map node->str forms)))
 
-(def ^:dynamic *indent* "    ")
-
-(defn- indent
-  "Indents all lines in `s` one level (`*indent*`)."
-  [s]
-  (->> s
-       (str/split-lines)
-       (map #(str *indent* %))
-       (str/join \newline)))
+;;; Control commands
 
 (defn- block
   [body]
-  (format "{\n%s\n}\n" (indent (node->str body))))
+  (format "{\n%s\n}\n" (u/indent (node->str body))))
 
 (defn- add-cond-body-pair
   [s [cond_ body]]
@@ -77,13 +57,29 @@
     (format "require %s;\n" (u/quoted-str (first exts)))
     (format "require [%s];\n" (u/quoted-strs exts))))
 
+(defmethod node->str 'stop
+  [[a]]
+  (simple-action a))
+
+;;; Action commands
+
 (defmethod node->str 'fileinto
   [[_ & [dest]]]
   (format "fileinto %s;" (u/quoted-str dest)))
 
+(defmethod node->str 'discard
+  [[a]]
+  (simple-action a))
+
+(defmethod node->str 'keep
+  [[a]]
+  (simple-action a))
+
 (defmethod node->str 'addflag
   [[_ & [flag]]]
   (format "addflag %s;" (u/flag-kw->str flag)))
+
+;;; Public API
 
 (defn transpile
   "Transpiles Clieve source form to Sieve source."
