@@ -20,7 +20,7 @@
       (is (= "# Line 1\n#\n# Line 2\n"
              (clieve/transpile '(comment_ "Line 1\n\nLine 2")))))))
 
-(deftest transpile-simple-actions-test
+(deftest transpile-simple-commands-test
   (testing "simple terminal actions"
     (testing "discard"
       (is (= "discard;"
@@ -32,8 +32,8 @@
       (is (= "stop;"
              (clieve/transpile '(stop)))))))
 
-(deftest transpile-require-actions-test
-  (testing "single require action"
+(deftest transpile-require-command-test
+  (testing "single require command"
     (testing "with single extension"
       (is (= "require \"fileinto\";\n"
              (clieve/transpile '(require "fileinto")))))
@@ -41,7 +41,7 @@
       (is (= "require [\"a\", \"b\"];\n"
              (clieve/transpile '(require "a" "b"))))))
 
-  (testing "multiple require actions"
+  (testing "multiple require commands"
     (testing "with single extension each"
       (is (= "require \"a\";\n\nrequire \"b\";\n"
              (clieve/transpile '(do (require "a") (require "b"))))))
@@ -52,12 +52,26 @@
       (is (= "require \"a\";\n\nrequire [\"b\", \"bb\"];\n"
              (clieve/transpile '(do (require "a") (require "b" "bb"))))))))
 
-(deftest transpile-fileinto-actions-test
+(deftest transpile-fileinto-command-test
   (testing "fileinto"
     (is (= "fileinto \"Junk\";"
            (clieve/transpile '(fileinto "Junk"))))))
 
-(deftest transpile-addflag-actions-test
+(deftest transpile-addflag-command-test
   (testing "addflag"
     (is (= "addflag \"\\\\Seen\";"
            (clieve/transpile '(addflag :seen))))))
+
+(deftest transpile-if-command-test
+  (testing "if command"
+    (testing "simple"
+      (testing "with single command in body"
+        (is (= "if false {\nstop;\n}\n"
+               (clieve/transpile '(if (raw false) (stop))))))
+      (testing "with multiple commands in body"
+        (is (= "if true {\ndiscard;\nstop;\n}\n"
+               (clieve/transpile
+                 '(if (raw true)
+                    (do
+                      (discard)
+                      (stop))))))))))

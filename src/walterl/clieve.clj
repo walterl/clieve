@@ -10,12 +10,20 @@
   "Coverts a Clieve node into a Sieve string."
   (fn [node] (first node)))
 
+(defmethod node->str :default
+  [node]
+  (throw (ex-info "Unsupported node" {:node node})))
+
 (defmethod node->str 'comment_
   [[_ & comments]]
   (->> comments
        (u/lines)
        (map u/comment-line)
        (str/join)))
+
+(defmethod node->str 'raw
+  [[_ & [x]]]
+  (str x))
 
 (defmethod node->str 'discard
   [[a]]
@@ -32,6 +40,13 @@
 (defmethod node->str 'do
   [[_ & forms]]
   (str/join \newline (map node->str forms)))
+
+(defmethod node->str 'if
+  [[_ cnd then]]
+  (str/join \newline
+            [(str "if " (node->str cnd) " {")
+             (node->str then)
+             "}\n"]))
 
 (defmethod node->str 'require
   [[_ & exts]]
