@@ -77,6 +77,12 @@
   [[_ & [flag]]]
   (format "addflag %s;" (u/flag-kw->str flag)))
 
+;;; Test commands
+
+(defmethod node->str 'header
+  [[_ comparitor headers keys_]]
+  (format "header %s %s %s" (u/comparitor (name comparitor)) (u/quoted headers) (u/quoted keys_)))
+
 ;;; Public API
 
 (defn transpile

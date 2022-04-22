@@ -127,3 +127,37 @@
                   (raw 21) (if (raw 31) (do (discard) (stop)))
                   (raw 22) (keep))
                 (discard)))))))
+
+(deftest transpile-header-command-test
+  (testing "header"
+    (testing "with single header"
+      (testing "and single key"
+        (is (= "header :is \"x-some-header\" \"Test key\""
+               (clieve/transpile '(header :is "x-some-header" "Test key")))))
+      (testing "and multiple keys"
+        (is (= "header :is \"x-some-header\" [\"this\", \"THAT\"]"
+               (clieve/transpile '(header :is "x-some-header" ["this" "THAT"]))))))
+    (testing "with multiple headers"
+      (testing "and single key"
+        (is (= "header :is [\"x-header1\", \"x-header2\"] \"Test key\""
+               (clieve/transpile '(header :is ["x-header1" "x-header2"] "Test key")))))
+      (testing "and multiple keys"
+        (is (= "header :is [\"x-header1\", \"x-header2\"] [\"this\", \"THAT\"]"
+               (clieve/transpile '(header :is ["x-header1" "x-header2"] ["this" "THAT"]))))))))
+
+(deftest integration-test
+  (testing "Real world example:"
+    (testing "File spam in \"Junk\" folder"
+      (is (= (str/join "\n"
+                       ["if header :is \"x-spam-flag\" \"yes\" {"
+                        "    addflag \"\\\\Seen\";"
+                        "    fileinto \"Junk\";"
+                        "    stop;"
+                        "}"
+                        ""])
+             (clieve/transpile
+               '(if (header :is "x-spam-flag" "yes")
+                  (do
+                    (addflag :seen)
+                    (fileinto "Junk")
+                    (stop)))))))))

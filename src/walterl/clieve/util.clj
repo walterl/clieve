@@ -55,3 +55,9 @@
        (str/split-lines)
        (map #(str *indent* %))
        (str/join \newline)))
+
+(defn comparitor
+  "Formats `x` as a comparitor: `:is` becomes \":is\"."
+  [kw]
+  ;; Avoid keyword namespaces; don't do (str kw)
+  (str ":" (name kw)))
