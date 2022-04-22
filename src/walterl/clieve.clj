@@ -79,6 +79,22 @@
 
 ;;; Test commands
 
+(defn- test-list
+  [tests]
+  (format "(\n%s\n)\n"
+          (->> tests
+               (map node->str)
+               (str/join ",\n")
+               (u/indent))))
+
+(defmethod node->str 'allof
+  [[_ & tests]]
+  (str "allof " (test-list tests)))
+
+(defmethod node->str 'allof
+  [[_ & tests]]
+  (str "allof " (test-list tests)))
+
 (defmethod node->str 'header
   [[_ comparitor headers keys_]]
   (format "header %s %s %s" (u/comparitor (name comparitor)) (u/quoted headers) (u/quoted keys_)))

@@ -128,6 +128,20 @@
                   (raw 22) (keep))
                 (discard)))))))
 
+(deftest transpile-allof-command-test
+  (testing "allof"
+    (is (= "allof (\n    true\n)\n"
+           (clieve/transpile '(allof (raw true)))))
+    (is (= "allof (\n    true,\n    false\n)\n"
+           (clieve/transpile '(allof (raw true) (raw false)))))))
+
+(deftest transpile-anyof-command-test
+  (testing "allof"
+    (is (= "allof (\n    true\n)\n"
+           (clieve/transpile '(allof (raw true)))))
+    (is (= "allof (\n    true,\n    false\n)\n"
+           (clieve/transpile '(allof (raw true) (raw false)))))))
+
 (deftest transpile-header-command-test
   (testing "header"
     (testing "with single header"
