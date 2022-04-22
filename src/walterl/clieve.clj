@@ -41,9 +41,19 @@
   [[_ & forms]]
   (str/join \newline (map node->str forms)))
 
+(def ^:dynamic *indent* "    ")
+
+(defn- indent
+  "Indents all lines in `s` one level (`*indent*`)."
+  [s]
+  (->> s
+       (str/split-lines)
+       (map #(str *indent* %))
+       (str/join \newline)))
+
 (defn- block
   [body]
-  (format "{\n%s\n}\n" (node->str body)))
+  (format "{\n%s\n}\n" (indent (node->str body))))
 
 (defn- add-cond-body-pair
   [s [cond_ body]]

@@ -1,5 +1,6 @@
 (ns walterl.clieve-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [clojure.string :as str]
+            [clojure.test :refer [deftest is testing]]
             [walterl.clieve :as clieve]))
 
 (deftest transpile-comment-test
@@ -66,32 +67,63 @@
   (testing "if command"
     (testing "simple"
       (testing "with single command in body"
-        (is (= "if false {\nstop;\n}\n"
+        (is (= "if false {\n    stop;\n}\n"
                (clieve/transpile '(if (raw false) (stop))))))
       (testing "with multiple commands in body"
-        (is (= "if true {\ndiscard;\nstop;\n}\n"
+        (is (= "if true {\n    discard;\n    stop;\n}\n"
                (clieve/transpile
                  '(if (raw true)
                     (do
                       (discard)
                       (stop)))))))))
   (testing "if-else"
-    (is (= "if true {\ndiscard;\n} else {\nstop;\n}\n"
+    (is (= "if true {\n    discard;\n} else {\n    stop;\n}\n"
            (clieve/transpile
              '(if (raw true)
                 (discard)
                 (stop))))))
   (testing "if-elsif"
-    (is (= "if true {\ndiscard;\n} elsif false {\nstop;\n}\n"
+    (is (= "if true {\n    discard;\n} elsif false {\n    stop;\n}\n"
            (clieve/transpile
              '(if
                 (raw true) (discard)
                 (raw false) (stop))))))
   (testing "if-elsif-elsif-else"
-    (is (= "if 1 {\nkeep;\n} elsif 2 {\ndiscard;\n} elsif 3 {\nkeep;\n} else {\nstop;\n}\n"
+    (is (= (str/join "\n"
+                     ["if 1 {"
+                      "    keep;"
+                      "} elsif 2 {"
+                      "    discard;"
+                      "} elsif 3 {"
+                      "    keep;"
+                      "} else {"
+                      "    stop;"
+                      "}"
+                      ""])
            (clieve/transpile
              '(if
                 (raw 1) (keep)
                 (raw 2) (discard)
                 (raw 3) (keep)
-                (stop)))))))
+                (stop))))))
+  (testing "nested if-elsif-else-blocks"
+    (is (= (str/join "\n"
+                     ["if 1 {"
+                      "    if 21 {"
+                      "        if 31 {"
+                      "            discard;" ;; Multiple actions
+                      "            stop;"
+                      "        }"
+                      "    } elsif 22 {"
+                      "        keep;"
+                      "    }"
+                      "} else {"
+                      "    discard;"
+                      "}"
+                      ""])
+           (clieve/transpile
+             '(if (raw 1)
+                (if
+                  (raw 21) (if (raw 31) (do (discard) (stop)))
+                  (raw 22) (keep))
+                (discard)))))))
