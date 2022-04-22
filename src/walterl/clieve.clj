@@ -41,12 +41,15 @@
   [[_ & forms]]
   (str/join \newline (map node->str forms)))
 
+(defn block
+  [body]
+  (format "{\n%s\n}\n" (node->str body)))
+
 (defmethod node->str 'if
-  [[_ cnd then]]
-  (str/join \newline
-            [(str "if " (node->str cnd) " {")
-             (node->str then)
-             "}\n"]))
+  [[_ cnd then else]]
+  (cond-> (format "if %s %s" (node->str cnd) (block then))
+    (some? else) (-> (str/trim-newline)
+                     (str " else " (block else)))))
 
 (defmethod node->str 'require
   [[_ & exts]]

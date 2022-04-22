@@ -74,4 +74,10 @@
                  '(if (raw true)
                     (do
                       (discard)
-                      (stop))))))))))
+                      (stop)))))))))
+  (testing "if-else"
+    (is (= "if true {\ndiscard;\n} else {\nstop;\n}\n"
+           (clieve/transpile
+             '(if (raw true)
+                (discard)
+                (stop)))))))
