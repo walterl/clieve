@@ -61,9 +61,22 @@
 
 ;;; Action commands
 
+(defn- copy-cmd
+  [cmd [copy dest]]
+  (if (nil? dest)
+    (copy-cmd cmd [nil copy])
+    (format "%s %s%s;"
+            cmd
+            (if copy ":copy " "")
+            (u/quoted-str dest))))
+
 (defmethod node->str 'fileinto
-  [[_ & [dest]]]
-  (format "fileinto %s;" (u/quoted-str dest)))
+  [[_ & args]]
+  (copy-cmd "fileinto" args))
+
+(defmethod node->str 'redirect
+  [[_ & args]]
+  (copy-cmd "redirect" args))
 
 (defmethod node->str 'discard
   [[a]]

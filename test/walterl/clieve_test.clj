@@ -56,7 +56,18 @@
 (deftest transpile-fileinto-command-test
   (testing "fileinto"
     (is (= "fileinto \"Junk\";"
-           (clieve/transpile '(fileinto "Junk"))))))
+           (clieve/transpile '(fileinto "Junk"))))
+    (testing "with :copy"
+      (is (= "fileinto :copy \"Mailing lists\";"
+             (clieve/transpile '(fileinto :copy "Mailing lists")))))))
+
+(deftest transpile-redirect-command-test
+  (testing "redirect"
+    (is (= "redirect \"Junk\";"
+           (clieve/transpile '(redirect "Junk"))))
+    (testing "with :copy"
+      (is (= "redirect :copy \"Mailing lists\";"
+             (clieve/transpile '(redirect :copy "Mailing lists")))))))
 
 (deftest transpile-addflag-command-test
   (testing "addflag"
