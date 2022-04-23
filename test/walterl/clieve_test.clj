@@ -192,4 +192,39 @@
                   (do
                     (addflag :seen)
                     (fileinto "Junk")
+                    (stop)))))))
+    (testing "File cron mail under server stuff"
+      (is (= (str/join "\n"
+                       ["if allof ("
+                        "    address :is :localpart \"from\" \"root\","
+                        "    header :matches \"subject\" \"Cron <*\""
+                        ") {"
+                        "    fileinto \"Server.Cron\";"
+                        "    stop;"
+                        "}"
+                        ""])
+             (clieve/transpile
+               '(if (allof
+                      (address :is :localpart "from" "root")
+                      (header :matches "subject" "Cron <*"))
+                  (do
+                    (fileinto "Server.Cron")
+                    (stop)))))))
+    (testing "File away fail2ban, marking some of them as seen"
+      (is (= (str/join "\n"
+                       ["if address :is :localpart \"from\" \"fail2ban\" {"
+                        "    if header :matches \"subject\" \"[Fail2Ban] noisy-filter\" {"
+                        "        addflag \"\\\\Seen\";"
+                        "    }"
+                        ""
+                        "    fileinto \"Server.Fail2ban\";"
+                        "    stop;"
+                        "}"
+                        ""])
+             (clieve/transpile
+               '(if (address :is :localpart "from" "fail2ban")
+                  (do
+                    (if (header :matches "subject" "[Fail2Ban] noisy-filter")
+                      (addflag :seen))
+                    (fileinto "Server.Fail2ban")
                     (stop)))))))))
