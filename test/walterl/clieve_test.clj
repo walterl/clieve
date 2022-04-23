@@ -187,6 +187,13 @@
         (is (= "header :is [\"x-header1\", \"x-header2\"] [\"this\", \"THAT\"]"
                (clieve/transpile '(header :is ["x-header1" "x-header2"] ["this" "THAT"]))))))))
 
+(deftest transpile-not-command-test
+  (testing "not"
+    (is (= "not true"
+           (clieve/transpile '(not (raw true)))))
+    (is (= "not address :is :domain \"from\" \"github.com\""
+           (clieve/transpile '(not (address :is :domain "from" "github.com")))))))
+
 (deftest integration-test
   (testing "Real world example:"
     (testing "File spam in \"Junk\" folder"

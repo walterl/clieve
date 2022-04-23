@@ -128,6 +128,10 @@
   [[_ comparitor headers keys_]]
   (format "header %s %s %s" (u/tagged-arg (name comparitor)) (u/string-list headers) (u/string-list keys_)))
 
+(defmethod node->str 'not
+  [[_ test]]
+  (str "not " (node->str test)))
+
 ;;; Public API
 
 (defn transpile
