@@ -102,7 +102,7 @@
 
 (defn- test-list
   [tests]
-  (format "(\n%s\n)\n"
+  (format "(\n%s\n)"
           (->> tests
                (map node->str)
                (str/join ",\n")
@@ -112,9 +112,9 @@
   [[_ & tests]]
   (str "allof " (test-list tests)))
 
-(defmethod node->str 'allof
+(defmethod node->str 'anyof
   [[_ & tests]]
-  (str "allof " (test-list tests)))
+  (str "anyof " (test-list tests)))
 
 (defmethod node->str 'header
   [[_ comparitor headers keys_]]
