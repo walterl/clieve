@@ -151,14 +151,24 @@
     (is (= "allof (\n    true\n)"
            (clieve/transpile '(allof (raw true)))))
     (is (= "allof (\n    true,\n    false\n)"
-           (clieve/transpile '(allof (raw true) (raw false)))))))
+           (clieve/transpile '(allof (raw true) (raw false))))))
+  (testing "and alias"
+    (is (= "allof (\n    true\n)"
+           (clieve/transpile '(and (raw true)))))
+    (is (= "allof (\n    true,\n    false\n)"
+           (clieve/transpile '(and (raw true) (raw false)))))))
 
 (deftest transpile-anyof-command-test
   (testing "anyof"
     (is (= "anyof (\n    true\n)"
            (clieve/transpile '(anyof (raw true)))))
     (is (= "anyof (\n    true,\n    false\n)"
-           (clieve/transpile '(anyof (raw true) (raw false)))))))
+           (clieve/transpile '(anyof (raw true) (raw false))))))
+  (testing "or alias"
+    (is (= "anyof (\n    true\n)"
+           (clieve/transpile '(or (raw true)))))
+    (is (= "anyof (\n    true,\n    false\n)"
+           (clieve/transpile '(or (raw true) (raw false)))))))
 
 (deftest transpile-header-command-test
   (testing "header"

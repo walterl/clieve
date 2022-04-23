@@ -112,9 +112,17 @@
   [[_ & tests]]
   (str "allof " (test-list tests)))
 
+(defmethod node->str 'and
+  [[_ & args]]
+  (node->str (into ['allof] args)))
+
 (defmethod node->str 'anyof
   [[_ & tests]]
   (str "anyof " (test-list tests)))
+
+(defmethod node->str 'or
+  [[_ & args]]
+  (node->str (into ['anyof] args)))
 
 (defmethod node->str 'header
   [[_ comparitor headers keys_]]
