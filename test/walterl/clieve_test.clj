@@ -194,6 +194,14 @@
     (is (= "not address :is :domain \"from\" \"github.com\""
            (clieve/transpile '(not (address :is :domain "from" "github.com")))))))
 
+(deftest shortcut-fileinto+stop-test
+  (is (= "fileinto \"Some.Folder\";\nstop;\n"
+         (clieve/transpile '(fileinto+stop "Some.Folder")))))
+
+(deftest shortcut-address-localpart-to-test
+  (is (= "address :is :localpart \"to\" \"me\""
+         (clieve/transpile '(address-localpart-to "me")))))
+
 (deftest integration-test
   (testing "Real world example:"
     (testing "File spam in \"Junk\" folder"

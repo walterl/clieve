@@ -132,6 +132,18 @@
   [[_ test]]
   (str "not " (node->str test)))
 
+;;; Shortcut commands
+
+(defmethod node->str 'fileinto+stop
+  ;; Expands to (do (fileinto x) (stop))
+  [[_ & args]]
+  (node->str (list 'do (conj args 'fileinto) (list 'stop))))
+
+(defmethod node->str 'address-localpart-to
+  ;; Expands to (address :is "localpart" "to" x)
+  [[_ x]]
+  (node->str (list 'address :is :localpart "to" x)))
+
 ;;; Public API
 
 (defn transpile
