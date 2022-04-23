@@ -50,12 +50,18 @@
 
 (def ^:dynamic *indent* "    ")
 
+(defn- indent-line
+  [s]
+  (if (str/blank? s)
+    s
+    (str *indent* s)))
+
 (defn indent
   "Indents all lines in `s` one level (`*indent*`)."
   [s]
   (->> s
        (str/split-lines)
-       (map #(str *indent* %))
+       (map indent-line)
        (str/join \newline)))
 
 (defn tagged-arg
