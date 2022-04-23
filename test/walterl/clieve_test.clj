@@ -24,13 +24,13 @@
 (deftest transpile-simple-commands-test
   (testing "simple terminal actions"
     (testing "discard"
-      (is (= "discard;"
+      (is (= "discard;\n"
              (clieve/transpile '(discard)))))
     (testing "keep"
-      (is (= "keep;"
+      (is (= "keep;\n"
              (clieve/transpile '(keep)))))
     (testing "stop"
-      (is (= "stop;"
+      (is (= "stop;\n"
              (clieve/transpile '(stop)))))))
 
 (deftest transpile-require-command-test
@@ -44,34 +44,34 @@
 
   (testing "multiple require commands"
     (testing "with single extension each"
-      (is (= "require \"a\";\n\nrequire \"b\";\n"
+      (is (= "require \"a\";\nrequire \"b\";\n"
              (clieve/transpile '(do (require "a") (require "b"))))))
     (testing "with multiple extensions each"
-      (is (= "require [\"a\", \"aa\"];\n\nrequire [\"b\", \"bb\", \"bbb\"];\n"
+      (is (= "require [\"a\", \"aa\"];\nrequire [\"b\", \"bb\", \"bbb\"];\n"
              (clieve/transpile '(do (require ["a" "aa"]) (require ["b" "bb" "bbb"]))))))
     (testing "one with a single extension, another with multiple"
-      (is (= "require \"a\";\n\nrequire [\"b\", \"bb\"];\n"
+      (is (= "require \"a\";\nrequire [\"b\", \"bb\"];\n"
              (clieve/transpile '(do (require "a") (require ["b" "bb"]))))))))
 
 (deftest transpile-fileinto-command-test
   (testing "fileinto"
-    (is (= "fileinto \"Junk\";"
+    (is (= "fileinto \"Junk\";\n"
            (clieve/transpile '(fileinto "Junk"))))
     (testing "with :copy"
-      (is (= "fileinto :copy \"Mailing lists\";"
+      (is (= "fileinto :copy \"Mailing lists\";\n"
              (clieve/transpile '(fileinto :copy "Mailing lists")))))))
 
 (deftest transpile-redirect-command-test
   (testing "redirect"
-    (is (= "redirect \"Junk\";"
-           (clieve/transpile '(redirect "Junk"))))
+    (is (= "redirect \"friend@example.com\";\n"
+           (clieve/transpile '(redirect "friend@example.com"))))
     (testing "with :copy"
-      (is (= "redirect :copy \"Mailing lists\";"
-             (clieve/transpile '(redirect :copy "Mailing lists")))))))
+      (is (= "redirect :copy \"backup@example.com\";\n"
+             (clieve/transpile '(redirect :copy "backup@example.com")))))))
 
 (deftest transpile-addflag-command-test
   (testing "addflag"
-    (is (= "addflag \"\\\\Seen\";"
+    (is (= "addflag \"\\\\Seen\";\n"
            (clieve/transpile '(addflag :seen))))))
 
 (deftest transpile-if-command-test
@@ -233,7 +233,6 @@
                         "    if header :matches \"subject\" \"[Fail2Ban] noisy-filter\" {"
                         "        addflag \"\\\\Seen\";"
                         "    }"
-                        ""
                         "    fileinto \"Server.Fail2ban\";"
                         "    stop;"
                         "}"

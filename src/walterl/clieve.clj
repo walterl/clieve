@@ -4,7 +4,7 @@
 
 (defn simple-action
   [x]
-  (str x ";"))
+  (str x ";\n"))
 
 (defmulti node->str
   "Coverts a Clieve node into a Sieve string."
@@ -27,7 +27,7 @@
 
 (defmethod node->str 'do
   [[_ & forms]]
-  (str/join \newline (map node->str forms)))
+  (str/join (map node->str forms)))
 
 ;;; Control commands
 
@@ -65,7 +65,7 @@
   [cmd [copy dest]]
   (if (nil? dest)
     (copy-cmd cmd [nil copy])
-    (format "%s %s%s;"
+    (format "%s %s%s;\n"
             cmd
             (if copy ":copy " "")
             (u/quoted-str dest))))
@@ -88,7 +88,7 @@
 
 (defmethod node->str 'addflag
   [[_ & [flag]]]
-  (format "addflag %s;" (u/flag-kw->str flag)))
+  (format "addflag %s;\n" (u/flag-kw->str flag)))
 
 ;;; Test commands
 
