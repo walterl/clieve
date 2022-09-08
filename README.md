@@ -1,12 +1,53 @@
 # Clieve
 
-Clojure-based DSL for [Sieve](http://sieve.info/) scripts.
+Render [Sieve](http://sieve.info/) scripts from a [Hiccup](https://github.com/weavejester/hiccup)-like [EDN representation](./example.edn).
 
 ## Usage
 
-Invoke a library API function from the command-line:
+Render Sieve from an EDN file:
 
-    $ clojure -X walterl.clieve/transpile :infile script.clv
+    $ clojure -X walterl.clieve/render-file :infile '"example.edn"'
+    require ["copy", "fileinto", "imap4flags"];
+    # Spam
+    if anyof (
+        allof (
+            header :is "x-spam-flag" "yes",
+            address :is :localpart "to" ["admin", "contact", "info", "sales"]
+        ),
+        header :contains "received" ["compromised@example.org", "spamtrap@example.org"],
+        address :matches :all "from" "advertise*@gmail.com",
+        address :is :all "from" "invitations@linkedin.com",
+        header :matches "subject" "I'd like to add you to my professional network on LinkedIn"
+    ) {
+        # fileinto "Sievedebug.Spam"
+        discard;
+        stop;
+    }
+    if header :is "x-spam-flag" "yes" {
+        addflag "\\Seen";
+        fileinto "Junk";
+        stop;
+    } else {
+        fileinto "Archive";
+    }
+    # Forwards
+    if address :is :localpart "to" "fwdme" {
+        redirect "destination@protonmail.com";
+    }
+    if address :is :localpart "to" "fwd-and-copy" {
+        redirect :copy "destination@protonmail.com";
+    }
+    if address :is :localpart "from" "fail2ban" {
+        if header :matches "subject" "[Fail2Ban] * started on *" {
+            addflag "\\Seen";
+        }
+        fileinto "VPS.Fail2ban";
+        stop;
+    }
+    if address :is :localpart "from" "logwatch" {
+        fileinto "Logs";
+        stop;
+    }
 
 Run the project's tests:
 
@@ -24,14 +65,4 @@ Install it locally (requires the `ci` task be run first):
 
 Copyright © 2022 Walter
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-[Full license](./LICENSE.md)
+Distributed under the [Eclipse Public License version 1.0](./LICENSE).
