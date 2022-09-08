@@ -1,0 +1,41 @@
+[:do
+ [:require ["copy" "fileinto" "imap4flags"]]
+
+ [:comment "Spam"]
+ [:if [:or
+       [:and
+        [:header :is "x-spam-flag" "yes"]
+        [:address-localpart-to ["admin" "contact" "info" "sales"]]]
+       [:header :contains "received"
+        ["compromised@example.org" "spamtrap@example.org"]]
+       [:address :matches :all "from" "advertise*@gmail.com"]
+       [:address :is :all "from" "invitations@linkedin.com"]
+       [:header :matches "subject" "I'd like to add you to my professional network on LinkedIn"]]
+  [:do
+   [:comment "fileinto \"Sievedebug.Spam\""]
+   [:discard]
+   [:stop]]]
+
+ [:if [:header :is "x-spam-flag" "yes"]
+  [:do
+   [:addflag :seen]
+   [:fileinto "Junk"]
+   [:stop]]
+  ;else
+  [:fileinto "Archive"]]
+
+ [:comment "Forwards"]
+ [:if [:address-localpart-to "fwdme"]
+  [:redirect "destination@protonmail.com"]]
+ [:if [:address-localpart-to "fwd-and-copy"]
+  [:redirect :copy "destination@protonmail.com"]]
+
+ [:if [:address :is :localpart "from" "fail2ban"]
+  [:do
+   [:if [:header :matches "subject" "[Fail2Ban] started on *"]
+    [:addflag :seen]]
+   [:fileinto "VPS.Fail2ban"]
+   [:stop]]]
+
+ [:if [:address :is :localpart "from" "logwatch"]
+  [:fileinto+stop "Logs"]]]
