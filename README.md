@@ -4,9 +4,9 @@ Clojure-based DSL for [Sieve](http://sieve.info/) scripts.
 
 ## Usage
 
-Invoke a library API function from the command-line:
+Render Sieve from an EDN file:
 
-    $ clojure -X walterl.clieve/transpile :infile script.clv
+    $ clojure -X walterl.clieve/render-file :infile script.edn
 
 Run the project's tests:
 
