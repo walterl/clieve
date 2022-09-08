@@ -65,4 +65,4 @@ Install it locally (requires the `ci` task be run first):
 
 Copyright © 2022 Walter
 
-Distributed under the [Eclipse Public License version 1.0](./LICENSE).
+Distributed under the [Eclipse Public License version 1.0](./LICENSE), just like Clojure.
